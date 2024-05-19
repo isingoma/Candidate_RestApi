@@ -23,16 +23,16 @@ namespace InterLoinkClass.Logic
                     connection.Open();
 
                     // Check if candidate exists
-                    string checkQuery = "SELECT COUNT(*) FROM Candidates WHERE candidate_id = @CandidateId";
+                    string checkQuery = "SELECT COUNT(*) FROM Candidates WHERE email = @Email";
                     using (SqlCommand checkCommand = new SqlCommand(checkQuery, connection))
                     {
-                        checkCommand.Parameters.AddWithValue("@CandidateId", dets.CandidateId);
+                        checkCommand.Parameters.AddWithValue("@Email", dets.Email);
                         int existingCount = (int)checkCommand.ExecuteScalar();
 
                         if (existingCount > 0)
                         {
                             response.statuscode = "100";
-                            response.statusdescription = "Candidate with the provided CandidateId already exists.";
+                            response.statusdescription = "Candidate with the provided email already exists.";
                             return response;
                         }
                     }
@@ -97,8 +97,8 @@ namespace InterLoinkClass.Logic
                     connection.Open();
 
                     string updateQuery = @"UPDATE Candidates 
-                                  SET github_url = @GitHubUrl, linkedin_url = @LinkedInUrl, phone_number = @PhoneNumber, email = @Email, call_time_interval = @CallTimeInterval
-                                  WHERE candidate_id = @CandidateId";
+                                  SET github_url = @GitHubUrl, linkedin_url = @LinkedInUrl, phone_number = @PhoneNumber, call_time_interval = @CallTimeInterval
+                                  WHERE email = @Email";
 
                     using (SqlCommand command = new SqlCommand(updateQuery, connection))
                     {
@@ -120,7 +120,7 @@ namespace InterLoinkClass.Logic
                         else
                         {
                             response.statuscode = "100";
-                            response.statusdescription = "No candidate found with the provided CandidateId.";
+                            response.statusdescription = "No candidate found with the provided email.";
                         }
                     }
                 }
@@ -143,10 +143,10 @@ namespace InterLoinkClass.Logic
                 {
                     connection.Open();
 
-                    string query = "SELECT * FROM Candidates WHERE candidate_id = @CandidateId";
+                    string query = "SELECT * FROM Candidates WHERE email = @Email";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        command.Parameters.AddWithValue("@CandidateId", dets.CandidateId);
+                        command.Parameters.AddWithValue("@Email", dets.Email);
 
                         SqlDataAdapter adapter = new SqlDataAdapter(command);
                         adapter.Fill(dt);
@@ -172,7 +172,7 @@ namespace InterLoinkClass.Logic
             catch (Exception ex)
             {
                 response.statuscode = "100";
-                response.statusdescription = "ERROR OCCURRED WHILE RETRIEVING DETAILS FOR CANDIDATE " + dets.CandidateId;
+                response.statusdescription = "ERROR OCCURRED WHILE RETRIEVING DETAILS FOR CANDIDATE " + dets.Email;
             }
             return response;
         }
